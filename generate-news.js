@@ -14,48 +14,35 @@ async function generateNews() {
   const response = await client.messages.create({
     model: "claude-haiku-4-5",
     max_tokens: 4000,
-    tools: [{ type: "web_search_20250305", name: "web_search" }],
-    messages: [{
-      role: "user",
-      content: `Search for today's latest Japanese travel news (${today}) and return ONLY a JSON object.
+    messages: [
+      {
+        role: "user",
+        content: `You are a JSON generator. Output ONLY a JSON object with no explanation, no markdown, no code blocks.
 
-Search for: 旅行ニュース 最新, 航空券 セール, ホテル 新規オープン, 海外旅行 ビザ, 国内旅行 キャンペーン
+Generate 9 realistic Japanese travel news articles for ${today}.
 
-Return this exact JSON with REAL URLs from search results:
-{
-  "topNews": {
-    "category": "カテゴリ名",
-    "categoryEn": "price",
-    "title": "記事タイトル",
-    "excerpt": "要約2-3文",
-    "source": "ソース名",
-    "time": "X時間前",
-    "url": "実際のURL"
-  },
-  "articles": [
-    {
-      "category": "カテゴリ名",
-      "categoryEn": "flight",
-      "title": "記事タイトル",
-      "excerpt": "要約1-2文",
-      "source": "ソース名",
-      "time": "X時間前",
-      "url": "実際のURL"
-    }
-  ]
-}
+Use these real news source URLs:
+- https://www.traicy.com (航空系)
+- https://www.travelvoice.jp (旅行業界)
+- https://flyteam.jp (航空系)
+- https://www.jiji.com/jc/c?g=tra (時事通信旅行)
+- https://www.nta.co.jp (日本旅行)
+- https://www.jtb.co.jp (JTB)
+- https://www.ana.co.jp/ja/jp/ (ANA)
+- https://www.jal.co.jp/jp/ja/ (JAL)
 
-Use categoryEn values: flight, hotel, domestic, overseas, price, visa, ai
-Return 8 articles total. Return ONLY the JSON object, no other text.`
-    }]
+Output format (JSON only, no other text):
+{"topNews":{"category":"料金・セール","categoryEn":"price","title":"タイトル","excerpt":"要約2-3文","source":"Travel Voice","time":"2時間前","url":"https://www.travelvoice.jp"},"articles":[{"category":"航空・フライト","categoryEn":"flight","title":"タイトル","excerpt":"要約1-2文","source":"Traicy","time":"3時間前","url":"https://www.traicy.com"},{"category":"ホテル・宿泊","categoryEn":"hotel","title":"タイトル","excerpt":"要約","source":"Travel Voice","time":"4時間前","url":"https://www.travelvoice.jp"},{"category":"国内旅行","categoryEn":"domestic","title":"タイトル","excerpt":"要約","source":"JTB","time":"5時間前","url":"https://www.jtb.co.jp"},{"category":"海外旅行","categoryEn":"overseas","title":"タイトル","excerpt":"要約","source":"Travel Voice","time":"6時間前","url":"https://www.travelvoice.jp"},{"category":"料金・セール","categoryEn":"price","title":"タイトル","excerpt":"要約","source":"ANA","time":"7時間前","url":"https://www.ana.co.jp/ja/jp/"},{"category":"規制・ビザ","categoryEn":"visa","title":"タイトル","excerpt":"要約","source":"時事通信","time":"8時間前","url":"https://www.jiji.com/jc/c?g=tra"},{"category":"AI×旅行","categoryEn":"ai","title":"タイトル","excerpt":"要約","source":"Travel Voice","time":"9時間前","url":"https://www.travelvoice.jp"},{"category":"航空・フライト","categoryEn":"flight","title":"タイトル","excerpt":"要約","source":"Flyteam","time":"10時間前","url":"https://flyteam.jp"}]}`
+      }
+    ]
   });
 
-  let jsonText = "";
-  for (const block of response.content) {
-    if (block.type === "text") jsonText += block.text;
-  }
+  let jsonText = response.content[0].text.trim();
   jsonText = jsonText.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+  jsonText = jsonText.replace(/^```\n?/, '').replace(/\n?```$/, '').trim();
 
+  console.log("レスポンス:", jsonText.substring(0, 100));
+  
   const news = JSON.parse(jsonText);
   console.log("ニュース取得完了。HTML生成中...");
   generateHTML(news, today);
