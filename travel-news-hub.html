@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>旅行 NEWS HUB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #0ea5e9;
+    --sky-dark: #0369a1;
+    --sky-light: #e0f2fe;
+    --sand: #f5f0e8;
+    --sand-dark: #e8dfc8;
+    --ocean: #0c4a6e;
+    --coral: #f97316;
+    --coral-light: #fff7ed;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --amber: #d97706;
+    --amber-light: #fffbeb;
+    --purple: #7c3aed;
+    --purple-light: #f5f3ff;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --bg: #f8fafc;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  /* ========== HEADER ========== */
+  header {
+    background: var(--ocean);
+    background-image:
+      radial-gradient(ellipse at 20% 50%, rgba(14,165,233,0.3) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 50%, rgba(249,115,22,0.15) 0%, transparent 50%);
+    color: white;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    gap: 1.5rem;
+  }
+
+  .logo {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .logo-travel {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.05em;
+  }
+
+  .logo-news {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: white;
+    letter-spacing: -0.01em;
+  }
+
+  .logo-hub {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--sky);
+    letter-spacing: 0.1em;
+  }
+
+  .header-search {
+    flex: 1;
+    max-width: 480px;
+    position: relative;
+  }
+
+  .header-search input {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.875rem;
+    outline: none;
+    transition: background 0.2s;
+  }
+
+  .header-search input::placeholder { color: rgba(255,255,255,0.5); }
+  .header-search input:focus { background: rgba(255,255,255,0.2); }
+
+  .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.6;
+  }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+
+  .update-time {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.6);
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  .update-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--sky);
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .update-btn:hover { background: var(--sky-dark); }
+
+  /* ========== HERO BAND ========== */
+  .hero-band {
+    background: linear-gradient(135deg, #0c4a6e 0%, #075985 40%, #0369a1 100%);
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-band::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-subtitle {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ========== STATS BAR ========== */
+  .stats-bar {
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--sky);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+  }
+
+  /* ========== MAIN LAYOUT ========== */
+  .main-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 4rem;
+  }
+
+  /* ========== FILTERS ========== */
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  .filter-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-right: 0.25rem;
+    flex-shrink: 0;
+  }
+
+  .filter-btn {
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--sky);
+    color: var(--sky-dark);
+  }
+
+  .filter-btn.active {
+    background: var(--ocean);
+    border-color: var(--ocean);
+    color: white;
+    font-weight: 700;
+  }
+
+  .cat-btn.cat-flight.active { background: var(--sky-dark); border-color: var(--sky-dark); }
+  .cat-btn.cat-hotel.active  { background: #d97706; border-color: #d97706; }
+  .cat-btn.cat-domestic.active { background: var(--green); border-color: var(--green); }
+  .cat-btn.cat-overseas.active { background: var(--purple); border-color: var(--purple); }
+  .cat-btn.cat-price.active  { background: var(--coral); border-color: var(--coral); }
+  .cat-btn.cat-visa.active   { background: #64748b; border-color: #64748b; }
+  .cat-btn.cat-ai.active     { background: #db2777; border-color: #db2777; }
+
+  .filter-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  .sort-select {
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  /* ========== FEATURED ARTICLE ========== */
+  .featured-article {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: box-shadow 0.2s;
+    cursor: pointer;
+  }
+
+  .featured-article:hover { box-shadow: 0 4px 24px rgba(12,74,110,0.1); }
+
+  .featured-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  .featured-content { flex: 1; }
+
+  .featured-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+  }
+
+  .featured-excerpt {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .featured-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .read-more {
+    color: var(--sky-dark);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .read-more:hover { color: var(--ocean); }
+
+  /* ========== CARD GRID ========== */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .news-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.15s;
+  }
+
+  .news-card:hover {
+    box-shadow: 0 4px 20px rgba(12,74,110,0.08);
+    transform: translateY(-2px);
+  }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-source {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .card-time {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .card-badges {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .badge-flight   { background: #e0f2fe; color: #0369a1; }
+  .badge-hotel    { background: #fffbeb; color: #92400e; }
+  .badge-domestic { background: #f0fdf4; color: #166534; }
+  .badge-overseas { background: #f5f3ff; color: #5b21b6; }
+  .badge-price    { background: #fff7ed; color: #9a3412; }
+  .badge-visa     { background: #f1f5f9; color: #334155; }
+  .badge-ai       { background: #fdf2f8; color: #9d174d; }
+
+  .card-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.55;
+    color: var(--text-primary);
+    flex: 1;
+  }
+
+  .card-excerpt {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 0.75rem;
+    margin-top: auto;
+  }
+
+  .card-read-more {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--sky-dark);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  /* ========== SECTION HEADER ========== */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--sand-dark);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ocean);
+  }
+
+  .section-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ========== STATUS BAR ========== */
+  .status-bar {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .status-count {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ========== X SHARE BANNER ========== */
+  .x-banner {
+    background: linear-gradient(135deg, #0c4a6e, #0369a1);
+    border-radius: 14px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .x-banner-text {
+    color: white;
+  }
+
+  .x-banner-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .x-banner-sub {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.65);
+  }
+
+  .x-share-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: black;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 999px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .x-share-btn:hover { opacity: 0.85; }
+
+  /* ========== FOOTER ========== */
+  footer {
+    background: var(--ocean);
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    padding: 1.5rem 2rem;
+    font-size: 0.8rem;
+    margin-top: 3rem;
+  }
+
+  footer a { color: var(--sky); text-decoration: none; }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .cards-grid { grid-template-columns: 1fr; }
+    .hero-title { font-size: 1.4rem; }
+    .featured-article { flex-direction: column; }
+    .stats-bar { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <span class="logo-travel">旅行</span>
+      <span class="logo-news">NEWS</span>
+      <span class="logo-hub">HUB</span>
+    </a>
+
+    <div class="header-search">
+      <svg class="search-icon" width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" placeholder="キーワードで検索…（例：格安フライト、ホテル、ビザ）">
+    </div>
+
+    <div class="header-meta">
+      <div class="update-time">
+        最終更新：17:00<br>
+        <span style="color:rgba(255,255,255,0.4);">毎日自動更新</span>
+      </div>
+      <button class="update-btn">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>
+        </svg>
+        更新
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== HERO BAND ===== -->
+<div class="hero-band">
+  <div class="hero-inner">
+    <h1 class="hero-title">✈️ 旅行ニュース、毎日更新。</h1>
+    <p class="hero-subtitle">Web・SNSから厳選した最新の旅行情報をAIがキュレーション</p>
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-num" id="total-count">32</span>
+        <span class="stat-label">Total Articles</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">12</span>
+        <span class="stat-label">Today</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">8</span>
+        <span class="stat-label">Sources</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">AI</span>
+        <span class="stat-label">Curated</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<main class="main-wrap">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <span>接続中 — 最新ニュース取得済み</span>
+    <span style="color:var(--text-muted)">2026/05/26 17:00 更新</span>
+    <span class="status-count">32件表示</span>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-row">
+    <span class="filter-label">Category:</span>
+    <button class="filter-btn active" onclick="filterCat(this,'all')">すべて</button>
+    <button class="filter-btn cat-btn cat-flight" onclick="filterCat(this,'flight')">✈️ 航空・フライト</button>
+    <button class="filter-btn cat-btn cat-hotel" onclick="filterCat(this,'hotel')">🏨 ホテル・宿泊</button>
+    <button class="filter-btn cat-btn cat-domestic" onclick="filterCat(this,'domestic')">🗾 国内旅行</button>
+    <button class="filter-btn cat-btn cat-overseas" onclick="filterCat(this,'overseas')">🌍 海外旅行</button>
+    <button class="filter-btn cat-btn cat-price" onclick="filterCat(this,'price')">💴 料金・セール</button>
+    <button class="filter-btn cat-btn cat-visa" onclick="filterCat(this,'visa')">📋 規制・ビザ</button>
+    <button class="filter-btn cat-btn cat-ai" onclick="filterCat(this,'ai')">🤖 AI×旅行</button>
+    <select class="sort-select">
+      <option>新着順 ↓</option>
+      <option>人気順</option>
+    </select>
+  </div>
+
+  <!-- FEATURED -->
+  <div class="section-header" style="margin-top:1.25rem">
+    <span class="section-title">🌟 本日のトップニュース</span>
+  </div>
+
+  <div class="featured-article">
+    <div class="featured-content">
+      <div class="featured-badge badge badge-price">💴 料金・セール</div>
+      <div class="featured-badge badge badge-flight" style="margin-left:0.5rem">✈️ 航空・フライト</div>
+      <h2 class="featured-title">夏の国内線、最大40%値下げ　大手3社が一斉セール開始——早割で東京〜沖縄が片道9,800円から</h2>
+      <p class="featured-excerpt">ANAおよびJAL、スカイマークの3社が、7〜8月の夏休みシーズンに向けた早割セールを同日に開始した。東京〜沖縄間の片道最安値が9,800円からとなり、昨年比で約15〜40%の値下げとなる路線も確認されている。</p>
+      <div class="featured-meta">
+        <span>国土交通省・各社プレスリリース</span>
+        <span>·</span>
+        <span>2時間前</span>
+      </div>
+    </div>
+    <a href="#" class="read-more">
+      READ MORE
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+
+  <!-- CARDS SECTION -->
+  <div class="section-header">
+    <span class="section-title">📰 最新ニュース</span>
+    <span class="section-count">31件</span>
+  </div>
+
+  <div class="cards-grid" id="cards-grid">
+
+    <!-- CARD 1 -->
+    <div class="news-card" data-cat="overseas">
+      <div class="card-top">
+        <span class="card-source">X (旅行クラスタ)</span>
+        <span class="card-time">3時間前</span>
+      </div>
+      <div class="card-badges">
+        <span class="badge badge-overseas">🌍 海外旅行</span>
+        <span class="badge badge-visa">📋 ビザ</span>
+      </div>
+      <p class="card-title">タイ入国、日本人向け90日ビザ免除が正式延長——2027年まで継続へ</p>
+      <p class="card-excerpt">タイ政府が発表した新方針により、日本国籍者への90日間ビザなし滞在が2027年末まで継続される。観光促進策の一環。</p>
+      <div class="card-footer">
+        <span class="card-time">Bangkok Post / X拡散</span>
+        <a href="#" class="card-read-more">READ MORE →</a>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="news-card" data-cat="hotel">
+      <div class="card-top">
+        <span class="card-source">旅行メディア</span>
+        <span class="card-time">4時間前</span>
+      </div>
+      <div class="card-badges">
+        <span class="badge badge-hotel">🏨 ホテル</span>
+        <span class="badge badge-domestic">🗾 国内</span>
+      </div>
+      <p class="card-title">京都の高級旅館予約、来春まで満室続出——インバウンド需要が国内観光客を圧迫</p>
+      <p class="card-excerpt">京都市内の星付き旅館・高級ホテルで2026年春の予約が既に満室となるケースが急増。国内観光客が取れないという声がSNSで広がっている。</p>
+      <div class="card-footer">
+        <span class="card-time">じゃらん / Xトレンド</span>
+        <a href="#" class="card-read-more">READ MORE →</a>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="news-card" data-cat="ai">
+      <div class="card-top">
+        <span class="card-source">テック系メディア</span>
+        <span class="card-time">5時間前</span>
+      </div>
+      <div class="card-badges">
+        <span class="badge badge-ai">🤖 AI×旅行</span>
+        <span class="badge badge-price">💴 セール</span>
+      </div>
+      <p class="card-title">Googleフライト、AI価格予測機能を強化——「今買うべき」判定の精度が大幅向上</p>
+      <p class="card-excerpt">Google Flightsが最新AIモデルを採用した価格予測機能をアップデート。最大3ヶ月先の価格動向を90%超の精度で予測できるとしている。</p>
+      <div class="card-footer">
+        <span class="card-time">The Verge / X</span>
+        <a href="#" class="card-read-more">READ MORE →</a>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="news-card" data-cat="flight">
+      <div class="card-top">
+        <span class="card-source">航空ニュース</span>
+        <span class="card-time">6時間前</span>
+      </div>
+      <div class="card-badges">
+        <span class="badge badge-flight">✈️ 航空</span>
+        <span class="badge badge-overseas">🌍 海外</span>
+      </div>
+      <p class="card-title">LCCのジェットスター、成田〜バリ島の直行便を10月から週3便に増便</p>
+      <p class="card-excerpt">ジェットスタージャパンが、需要増を受けて成田〜デンパサール（バリ島）線の運航を週2便から週3便に拡大すると発表した。</p>
+      <div class="card-footer">
+        <span class="card-time">JETSTAR公式 / X</span>
+        <a href="#" class="card-read-more">READ MORE →</a>
+      </div>
+    </div>
+
+    <!-- CARD 5 -->
+    <div class="news-card" data-cat="domestic">
+      <div class="card-top">
+        <span class="card-source">観光庁</span>
+        <span class="card-time">8時間前</span>
+      </div>
+      <div class="card-badges">
+        <span class="badge badge-domestic">🗾 国内旅行</span>
+      </div>
+      <p class="card-title">観光庁、北海道・東北を重点支援エリアに指定——地方誘客クーポン1人5,000円分を配布</p>
+      <p class="card-excerpt">観光庁は地方分散型観光推進施策の一環として、北海道・東北6県への旅行者に対して電子クーポンを配布するモデル事業を開始すると発表した。</p>
+      <div class="card-footer">
+        <span class="card-time">観光庁発表</span>
+        <a href="#" class="card-read-more">READ MORE →</a>
+      </div>
+    </div>
+
+    <!-- CARD 6 -->
+    <div class="news-card" data-cat="price">
+      <div class="card-top">
+        <span class="card-source">X (旅行クラスタ)</span>
+        <span class="card-time">9時間前</span>
+      </div>
+      <div class="card-badges">
+        <span class="badge badge-price">💴 料金・セール</span>
+        <span class="badge badge-hotel">🏨 ホテル</span>
+      </div>
+      <p class="card-title">楽天トラベル「スーパーSALE」6月開催決定——最大50%オフのホテルが続出か</p>
+      <p class="card-excerpt">楽天トラベルが6月のスーパーSALE開催を告知。昨年は人気温泉地のホテルが最大50%引きとなる例があり、今年も同等規模を計画しているとされる。</p>
+      <div class="card-footer">
+        <span class="card-time">楽天 / Xトレンド</span>
+        <a href="#" class="card-read-more">READ MORE →</a>
+      </div>
+    </div>
+
+    <!-- CARD 7 -->
+    <div class="news-card" data-cat="overseas">
+      <div class="card-top">
+        <span class="card-source">海外メディア</span>
+        <span class="card-time">11時間前</span>
+      </div>
+      <div class="card-badges">
+        <span class="badge badge-overseas">🌍 海外旅行</span>
+        <span class="badge badge-visa">📋 規制</span>
+      </div>
+      <p class="card-title">欧州ETA（電子渡航認証）、日本人への適用が10月から本格開始</p>
+      <p class="card-excerpt">英国に続き、EU圏でも電子渡航認証（ETA）が10月より本格運用。日本人旅行者も事前申請（7ユーロ）が必要になる見込み。</p>
+      <div class="card-footer">
+        <span class="card-time">EU公式発表</span>
+        <a href="#" class="card-read-more">READ MORE →</a>
+      </div>
+    </div>
+
+    <!-- CARD 8 -->
+    <div class="news-card" data-cat="flight">
+      <div class="card-top">
+        <span class="card-source">X (航空クラスタ)</span>
+        <span class="card-time">13時間前</span>
+      </div>
+      <div class="card-badges">
+        <span class="badge badge-flight">✈️ 航空</span>
+        <span class="badge badge-price">💴 セール</span>
+      </div>
+      <p class="card-title">ANAマイレージ、特典航空券の必要マイル数を一部区間で引き下げへ——欧米線が対象</p>
+      <p class="card-excerpt">ANAが2026年秋以降の特典航空券プログラムを一部改定。欧米主要都市への往復特典に必要なマイル数が最大15%削減される区間が発表された。</p>
+      <div class="card-footer">
+        <span class="card-time">ANA公式 / X</span>
+        <a href="#" class="card-read-more">READ MORE →</a>
+      </div>
+    </div>
+
+    <!-- CARD 9 -->
+    <div class="news-card" data-cat="ai">
+      <div class="card-top">
+        <span class="card-source">テック系メディア</span>
+        <span class="card-time">14時間前</span>
+      </div>
+      <div class="card-badges">
+        <span class="badge badge-ai">🤖 AI×旅行</span>
+        <span class="badge badge-overseas">🌍 海外</span>
+      </div>
+      <p class="card-title">旅程自動生成AIアプリ「TravelGPT」が日本語対応——1分で完全なプランを提案</p>
+      <p class="card-excerpt">海外発のAI旅程生成ツールが日本語インターフェースを追加。予算・日数・好みを入力するだけで、ホテル予約リンク付きの旅程を自動生成できる。</p>
+      <div class="card-footer">
+        <span class="card-time">ProductHunt / X</span>
+        <a href="#" class="card-read-more">READ MORE →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- X SHARE BANNER -->
+  <div class="x-banner">
+    <div class="x-banner-text">
+      <div class="x-banner-title">📢 本日のまとめをXでシェア</div>
+      <div class="x-banner-sub">毎朝、厳選ニュースを自動投稿しています。フォローして旅行情報をいち早く受け取ろう。</div>
+    </div>
+    <a href="https://twitter.com/intent/tweet?text=【旅行ニュースまとめ】本日のトップニュース%0A%0A✈️夏の国内線、最大40%%値下げ%0A🌍タイ90日ビザ免除2027年まで延長%0A🤖GoogleフライトAI予測機能強化%0A%0A詳細→ https://example.com%0A%0A%23旅行%23旅%23tabicmp" target="_blank" class="x-share-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.844L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      X でシェア
+    </a>
+  </div>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>© 2026 旅行 NEWS HUB — 旅行比較ツール <a href="#">TabiCmp</a> と連携中</p>
+  <p style="margin-top:0.4rem;font-size:0.72rem">本サービスはAIが自動収集・要約したニュースを提供します。情報の正確性についてはリンク先の原文をご確認ください。</p>
+</footer>
+
+<script>
+  function filterCat(btn, cat) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const cards = document.querySelectorAll('.news-card');
+    cards.forEach(card => {
+      if (cat === 'all' || card.dataset.cat === cat) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    const visible = document.querySelectorAll('.news-card:not([style*="none"])').length;
+    document.querySelector('.status-count').textContent = visible + '件表示';
+  }
+</script>
+
+</body>
+</html>
