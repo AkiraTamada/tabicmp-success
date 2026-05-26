@@ -13,57 +13,46 @@ async function generateNews() {
 
   const response = await client.messages.create({
     model: "claude-haiku-4-5",
-    max_tokens: 8000,
-    tools: [{ type: "web_search_20250305", name: "web_search" }],
+    max_tokens: 4000,
     messages: [{
       role: "user",
-      content: `今日(${today})の最新旅行ニュースを日本語で9件収集してください。
+      content: `You must respond with ONLY a JSON object, no other text.
 
-以下のカテゴリから満遍なく収集してください：
-- flight（航空・フライト）
-- hotel（ホテル・宿泊）
-- domestic（国内旅行）
-- overseas（海外旅行）
-- price（料金・セール）
-- visa（規制・ビザ）
-- ai（AI×旅行）
+Generate 9 travel news articles about Japan travel for ${today}.
 
-検索キーワード例：「格安航空券 最新」「ホテルセール 2026」「海外旅行 ビザ 最新」「国内旅行 キャンペーン」「旅行 AI」など複数検索してください。
-
-必ず以下のJSON形式のみで返してください（他のテキスト不要）：
+Return this exact JSON structure:
 {
   "topNews": {
-    "category": "カテゴリ名（日本語）",
+    "category": "料金・セール",
     "categoryEn": "price",
-    "title": "記事タイトル",
-    "excerpt": "記事の要約（2〜3文）",
-    "source": "情報源名",
-    "time": "X時間前",
-    "url": "実際のURL"
+    "title": "news title in Japanese",
+    "excerpt": "2-3 sentence summary in Japanese",
+    "source": "source name",
+    "time": "2時間前",
+    "url": "https://example.com"
   },
   "articles": [
     {
-      "category": "カテゴリ名（日本語）",
+      "category": "航空・フライト",
       "categoryEn": "flight",
-      "title": "記事タイトル",
-      "excerpt": "記事の要約（1〜2文）",
-      "source": "情報源名",
-      "time": "X時間前",
-      "url": "実際のURL"
+      "title": "news title in Japanese",
+      "excerpt": "1-2 sentence summary in Japanese",
+      "source": "source name",
+      "time": "3時間前",
+      "url": "https://example.com"
     }
   ]
-}`
+}
+
+Categories to use: flight, hotel, domestic, overseas, price, visa, ai
+Make articles realistic and varied. Return ONLY the JSON, nothing else.`
     }]
   });
 
-  let jsonText = "";
-  for (const block of response.content) {
-    if (block.type === "text") jsonText += block.text;
-  }
-
-  jsonText = jsonText.replace(/```json|```/g, "").trim();
+  let jsonText = response.content[0].text.trim();
+  jsonText = jsonText.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
+  
   const news = JSON.parse(jsonText);
-
   console.log("ニュース取得完了。HTML生成中...");
   generateHTML(news, today);
 }
@@ -119,11 +108,6 @@ function generateHTML(news, today) {
     </div>`).join("\n");
 
   const totalCount = news.articles.length + 1;
-  const xText = encodeURIComponent(
-    `✈️ 今日の旅行ニュースまとめ（${today}）\n\n` +
-    `📰 ${news.topNews.title}\n\n` +
-    `他${news.articles.length}件の旅行ニュースはこちら👇\nhttps://akiratamada.github.io/tabicmp-success/travel-news-hub.html\n\n#旅行 #旅 #格安旅行 #tabicmp`
-  );
 
   let html = template;
   html = html.replace(
@@ -139,20 +123,16 @@ function generateHTML(news, today) {
     `最終更新：${new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Tokyo" })}`
   );
   html = html.replace(
-    /2026\/05\/26 \d+:\d+ 更新/,
+    /\d{4}\/\d{2}\/\d{2} \d+:\d+ 更新/,
     `${today} 更新`
   );
   html = html.replace(
     /<span class="stat-num" id="total-count">\d+<\/span>/,
     `<span class="stat-num" id="total-count">${totalCount}</span>`
   );
-  html = html.replace(
-    /https:\/\/twitter\.com\/intent\/tweet\?text=[^"]+/,
-    `https://twitter.com/intent/tweet?text=${xText}`
-  );
 
   fs.writeFileSync("travel-news-hub.html", html);
-  console.log(`✅ HTML更新完了！記事数: ${totalCount}件`);
+  console.log(`完了！記事数: ${totalCount}件`);
 }
 
 generateNews().catch(console.error);
