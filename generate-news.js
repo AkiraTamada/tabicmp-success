@@ -14,44 +14,48 @@ async function generateNews() {
   const response = await client.messages.create({
     model: "claude-haiku-4-5",
     max_tokens: 4000,
+    tools: [{ type: "web_search_20250305", name: "web_search" }],
     messages: [{
       role: "user",
-      content: `You must respond with ONLY a JSON object, no other text.
+      content: `Search for today's latest Japanese travel news (${today}) and return ONLY a JSON object.
 
-Generate 9 travel news articles about Japan travel for ${today}.
+Search for: 旅行ニュース 最新, 航空券 セール, ホテル 新規オープン, 海外旅行 ビザ, 国内旅行 キャンペーン
 
-Return this exact JSON structure:
+Return this exact JSON with REAL URLs from search results:
 {
   "topNews": {
-    "category": "料金・セール",
+    "category": "カテゴリ名",
     "categoryEn": "price",
-    "title": "news title in Japanese",
-    "excerpt": "2-3 sentence summary in Japanese",
-    "source": "source name",
-    "time": "2時間前",
-    "url": "https://example.com"
+    "title": "記事タイトル",
+    "excerpt": "要約2-3文",
+    "source": "ソース名",
+    "time": "X時間前",
+    "url": "実際のURL"
   },
   "articles": [
     {
-      "category": "航空・フライト",
+      "category": "カテゴリ名",
       "categoryEn": "flight",
-      "title": "news title in Japanese",
-      "excerpt": "1-2 sentence summary in Japanese",
-      "source": "source name",
-      "time": "3時間前",
-      "url": "https://example.com"
+      "title": "記事タイトル",
+      "excerpt": "要約1-2文",
+      "source": "ソース名",
+      "time": "X時間前",
+      "url": "実際のURL"
     }
   ]
 }
 
-Categories to use: flight, hotel, domestic, overseas, price, visa, ai
-Make articles realistic and varied. Return ONLY the JSON, nothing else.`
+Use categoryEn values: flight, hotel, domestic, overseas, price, visa, ai
+Return 8 articles total. Return ONLY the JSON object, no other text.`
     }]
   });
 
-  let jsonText = response.content[0].text.trim();
+  let jsonText = "";
+  for (const block of response.content) {
+    if (block.type === "text") jsonText += block.text;
+  }
   jsonText = jsonText.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
-  
+
   const news = JSON.parse(jsonText);
   console.log("ニュース取得完了。HTML生成中...");
   generateHTML(news, today);
