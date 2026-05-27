@@ -3,49 +3,54 @@ const fs = require("fs");
 
 const client = new Anthropic();
 
-async function generateNews() {
-  console.log("ニュース収集開始...");
-
-  const today = new Date().toLocaleDateString("ja-JP", {
-    year: "numeric", month: "2-digit", day: "2-digit",
-    timeZone: "Asia/Tokyo"
-  });
-
-  const response = await client.messages.create({
-    model: "claude-haiku-4-5",
-    max_tokens: 4000,
-    messages: [
-      {
-        role: "user",
-        content: `You are a JSON generator. Output ONLY a JSON object with no explanation, no markdown, no code blocks.
-
-Generate 9 realistic Japanese travel news articles for ${today}.
-
-Use these real news source URLs:
-- https://www.traicy.com (航空系)
-- https://www.travelvoice.jp (旅行業界)
-- https://flyteam.jp (航空系)
-- https://www.jiji.com/jc/c?g=tra (時事通信旅行)
-- https://www.nta.co.jp (日本旅行)
-- https://www.jtb.co.jp (JTB)
-- https://www.ana.co.jp/ja/jp/ (ANA)
-- https://www.jal.co.jp/jp/ja/ (JAL)
-
-Output format (JSON only, no other text):
-{"topNews":{"category":"料金・セール","categoryEn":"price","title":"タイトル","excerpt":"要約2-3文","source":"Travel Voice","time":"2時間前","url":"https://www.travelvoice.jp"},"articles":[{"category":"航空・フライト","categoryEn":"flight","title":"タイトル","excerpt":"要約1-2文","source":"Traicy","time":"3時間前","url":"https://www.traicy.com"},{"category":"ホテル・宿泊","categoryEn":"hotel","title":"タイトル","excerpt":"要約","source":"Travel Voice","time":"4時間前","url":"https://www.travelvoice.jp"},{"category":"国内旅行","categoryEn":"domestic","title":"タイトル","excerpt":"要約","source":"JTB","time":"5時間前","url":"https://www.jtb.co.jp"},{"category":"海外旅行","categoryEn":"overseas","title":"タイトル","excerpt":"要約","source":"Travel Voice","time":"6時間前","url":"https://www.travelvoice.jp"},{"category":"料金・セール","categoryEn":"price","title":"タイトル","excerpt":"要約","source":"ANA","time":"7時間前","url":"https://www.ana.co.jp/ja/jp/"},{"category":"規制・ビザ","categoryEn":"visa","title":"タイトル","excerpt":"要約","source":"時事通信","time":"8時間前","url":"https://www.jiji.com/jc/c?g=tra"},{"category":"AI×旅行","categoryEn":"ai","title":"タイトル","excerpt":"要約","source":"Travel Voice","time":"9時間前","url":"https://www.travelvoice.jp"},{"category":"航空・フライト","categoryEn":"flight","title":"タイトル","excerpt":"要約","source":"Flyteam","time":"10時間前","url":"https://flyteam.jp"}]}`
-      }
-    ]
-  });
-
-  let jsonText = response.content[0].text.trim();
-  jsonText = jsonText.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
-  jsonText = jsonText.replace(/^```\n?/, '').replace(/\n?```$/, '').trim();
-
-  console.log("レスポンス:", jsonText.substring(0, 100));
+async function searchNews() {
+  console.log("ニュース検索開始...");
   
-  const news = JSON.parse(jsonText);
-  console.log("ニュース取得完了。HTML生成中...");
-  generateHTML(news, today);
+  const searchResponse = await client.messages.create({
+    model: "claude-haiku-4-5",
+    max_tokens: 3000,
+    tools: [{ type: "web_search_20250305", name: "web_search" }],
+    messages: [{
+      role: "user",
+      content: "Search for the latest Japanese travel news today. Search for: '旅行 ニュース 最新 2026' and '航空券 セール 最新' and 'ホテル 新規オープン 2026'. Return a plain text list of up to 9 news items with: title, URL, and one-sentence summary. Nothing else."
+    }]
+  });
+
+  let searchText = "";
+  for (const block of searchResponse.content) {
+    if (block.type === "text") searchText += block.text;
+  }
+  return searchText;
+}
+
+async function convertToJSON(searchText, today) {
+  console.log("JSON変換中...");
+  
+  const jsonResponse = await client.messages.create({
+    model: "claude-haiku-4-5",
+    max_tokens: 3000,
+    messages: [{
+      role: "user",
+      content: `Convert this news list to JSON. Output ONLY the JSON object, no markdown, no explanation.
+
+News data:
+${searchText}
+
+Output this exact JSON structure:
+{"topNews":{"category":"料金・セール","categoryEn":"price","title":"タイトル","excerpt":"要約2文","source":"ソース名","time":"2時間前","url":"https://actual-url.com"},"articles":[{"category":"航空・フライト","categoryEn":"flight","title":"タイトル","excerpt":"要約1文","source":"ソース名","time":"3時間前","url":"https://actual-url.com"}]}
+
+Rules:
+- Use categoryEn: flight, hotel, domestic, overseas, price, visa, ai
+- Include 8 articles total
+- Use the ACTUAL URLs from the news data above
+- Output ONLY the JSON, absolutely nothing else`
+    }]
+  });
+
+  return jsonResponse.content[0].text.trim()
+    .replace(/^```json\n?/, '').replace(/\n?```$/, '')
+    .replace(/^```\n?/, '').replace(/\n?```$/, '')
+    .trim();
 }
 
 function getCategoryBadge(categoryEn, categoryJa) {
@@ -126,4 +131,20 @@ function generateHTML(news, today) {
   console.log(`完了！記事数: ${totalCount}件`);
 }
 
-generateNews().catch(console.error);
+async function main() {
+  const today = new Date().toLocaleDateString("ja-JP", {
+    year: "numeric", month: "2-digit", day: "2-digit",
+    timeZone: "Asia/Tokyo"
+  });
+
+  const searchText = await searchNews();
+  console.log("検索完了。JSON変換中...");
+  
+  const jsonText = await convertToJSON(searchText, today);
+  console.log("レスポンス先頭:", jsonText.substring(0, 50));
+  
+  const news = JSON.parse(jsonText);
+  generateHTML(news, today);
+}
+
+main().catch(console.error);
