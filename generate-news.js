@@ -119,7 +119,7 @@ function generateHTML(news, today) {
     `最終更新：${new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Tokyo" })}`
   );
   html = html.replace(
-    /\d{4}\/\d{2}\/\d{2} \d+:\d+ 更新/,
+    /\d{4}\/\d{2}\/\d{2}.*?更新/,
     `${today} 更新`
   );
   html = html.replace(
