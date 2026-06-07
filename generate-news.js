@@ -7,7 +7,7 @@ async function searchNews() {
   console.log("ニュース検索開始...");
   
   const searchResponse = await client.messages.create({
-    model: "claude-haiku-4-5",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 3000,
     tools: [{ type: "web_search_20250305", name: "web_search" }],
     messages: [{
@@ -27,7 +27,7 @@ async function convertToJSON(searchText, today) {
   console.log("JSON変換中...");
   
   const jsonResponse = await client.messages.create({
-    model: "claude-haiku-4-5",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 3000,
     messages: [{
       role: "user",
