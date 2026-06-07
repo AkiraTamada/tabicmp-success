@@ -147,24 +147,11 @@ const shareUrl = encodeShareUrl(news);
       X でシェア
     </a>
   </div>
-
+  
 </main>`
-  );
-  <div class="x-banner">
-    <div class="x-banner-text">
-      <div class="x-banner-title">📢 本日のまとめをXでシェア</div>
-      <div class="x-banner-sub">毎朝、厳選ニュースを自動投稿しています。フォローして旅行情報をいち早く受け取ろう。</div>
-    </div>
-    <a href="${encodeShareUrl(news)}" target="_blank" class="x-share-btn">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.844L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      X でシェア
-    </a>
-  </div>
-
-</main>`
-  );
-  fs.writeFileSync("travel-news-hub.html", html);
-  console.log(`完了！記事数: ${totalCount}件`);
+ );
+ fs.writeFileSync("travel-news-hub.html", html);
+ console.log(`完了！記事数: ${totalCount}件`);
 }
 
 async function main() {
