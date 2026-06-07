@@ -133,6 +133,10 @@ function generateHTML(news, today) {
     `<span class="stat-num" id="total-count">${totalCount}</span>`
   );
 
+  html = html.replace(
+    'X_SHARE_URL_PLACEHOLDER',
+    encodeShareUrl(news)
+  );
   fs.writeFileSync("travel-news-hub.html", html);
   console.log(`完了！記事数: ${totalCount}件`);
 }
