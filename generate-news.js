@@ -67,6 +67,12 @@ function getCategoryBadge(categoryEn, categoryJa) {
   return `<span class="badge ${c.cls}">${c.emoji} ${categoryJa}</span>`;
 }
 
+function encodeShareUrl(news) {
+  const titles = [news.topNews, ...news.articles.slice(0, 2)];
+  const lines = titles.map(a => `・${a.title}`).join('\n');
+  const text = `【旅行ニュースまとめ】本日のトップニュース\n\n${lines}\n\n詳細→ https://akiratamada.github.io/tabicmp-success/travel-news-hub.html\n\n#旅行 #旅 #tabicmp`;
+  return `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+}
 function generateHTML(news, today) {
   const template = fs.readFileSync("travel-news-hub.html", "utf-8");
 
