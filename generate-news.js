@@ -12,7 +12,7 @@ async function searchNews() {
     tools: [{ type: "web_search_20250305", name: "web_search" }],
     messages: [{
       role: "user",
-      content: "Search for the latest Japanese travel news today. Search for: '旅行 ニュース 最新 2026' and '航空券 セール 最新' and 'ホテル 新規オープン 2026'. Return a plain text list of up to 9 news items with: title, URL, and one-sentence summary. Nothing else."
+      content: `Search for the latest Japanese travel news published within the last 3 days. Today is ${new Date().toLocaleDateString("ja-JP", {timeZone: "Asia/Tokyo"})}. Search for: '旅行 ニュース 最新' and '航空券 セール 最新' and 'ホテル 新規オープン'. Only include news from the past 3 days. Return a plain text list of up to 9 news items with: title, URL, and one-sentence summary. Nothing else.`
     }]
   });
 
